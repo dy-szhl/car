@@ -88,11 +88,12 @@ class User extends BaseModel
     /**
      * 登录
      */
-    public static function handleLogin($account){
+    public static function handleLogin($account,$php_input){
         empty($account) && exception('请输入手机号');
         $model = self::where(['phone'=>$account])->find();
         if(empty($model)){
             $model = new self();
+            $data = $php_input;
             $data['phone'] = $account;
         }
         if(!empty($data)){

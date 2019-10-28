@@ -27,9 +27,12 @@ class Index extends Common
        if($this->request->isPost()){
             $code = $this->request->param('code');
             $phone = $this->request->param('phone');
+            $input_data = $this->request->param();
             try{
                 \app\common\model\Sms::validVerify(0,$phone,$code);
-                $Model = \app\common\model\User::handleLogin($phone);
+                unset($input_data['code']);
+                unset($input_data['phone']);
+                $Model = \app\common\model\User::handleLogin($phone,$input_data);
             }catch (\Exception $e){
                 return $this->_resData(0,$e->getMessage());
             }
