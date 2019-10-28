@@ -1,0 +1,66 @@
+{extend name="base" /}
+<!--高亮选中效果-->
+{block name="current_index"}system/manager{/block}
+
+{block name="content"}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <!--<h3 class="box-title">Quick Example</h3>-->
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+            <div class="box-body">
+                <form id="form" action="" class="form-horizontal">
+                    <input type="hidden" name="id" value="{$model['id']}"/>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="用户名" name="name" value="{$model['name']}" maxlength="20">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">登录帐号</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="登录帐号" name="account" value="{$model['account']}" maxlength="20">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" placeholder="****" name="password" maxlength="50">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">手机号码</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" placeholder="手机号码" name="phone" value="{$model['phone']}" maxlength="50">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">状态</label>
+                        <div class="col-sm-10">
+                            <label>
+                                <input type="radio" name="status" value="1" {:$model['status']!=2?'checked':''} />
+                                正常
+                            </label>
+                            <label>
+                                <input type="radio" name="status" value="2" {:$model['status']==2?'checked':''}>
+                                关闭
+                            </label>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <!-- /.box-body -->
+
+        <div class="box-footer">
+            <button type="button" onclick="$.common.submitForm()" class="col-sm-offset-2 btn  btn-info">保存</button>
+        </div>
+    </div>
+
+{/block}

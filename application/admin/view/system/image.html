@@ -1,0 +1,75 @@
+{extend name="base" /}
+<!--高亮选中效果-->
+{block name="current_index"}system/image{/block}
+
+{block name="content"}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <div class="col-sm-2">
+                <a class="layui-btn layui-btn-sm" href="{:url('imageAdd')}">添加轮播图</a>
+            </div>
+
+            <div class="col-sm-10">
+
+                <div class="btn-group">
+                    {volist name="\app\common\model\Image::getPropInfo('fields_type')" id="vo"}
+                    <a href="{:url('',['type'=>$key])}" class="btn {:$type==$key?'btn-instagram':'btn-info'}">{$vo['name']}</a>
+                    {/volist}
+                </div>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+            <div class="box-body no-padding">
+                <table class="table table-striped" id="layer-photos-demo">
+                    <thead>
+                        <tr>
+                            <th width="20">#</th>
+                            <!--<th width="80">类型</th>-->
+                            <th width="80">标题</th>
+                            <th width="100">图片</th>
+                            <th width="100">url</th>
+                            <th width="120">更新日期</th>
+                            <th width="60">状态</th>
+                            <th width="120">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="list" id="vo"}
+                        <tr>
+                            <td>{$i}</td>
+                            <!--<td>{:\\app\\common\\model\\Image::getPropInfo('fields_type',$vo['type'],'name')}</td>-->
+                            <td>{$vo['title']}</td>
+                            <td><img src="{$vo['img']}" alt="{$vo['title']}" width="40" height="40"></td>
+                            <td>{$vo['url']}</td>
+                            <td>{$vo['update_time']}</td>
+                            <td>{:\\app\\common\\model\\Image::getPropInfo('fields_status',$vo['status'])}</td>
+                            <td>
+                                <a class="layui-btn layui-btn-sm" href="{:url('imageAdd',['id'=>$vo['id']])}">编辑</a>
+                                <a class="layui-btn layui-btn-danger layui-btn-sm" href="javascript:;" onclick="$.common.waitConfirm('是否删除该条数据?','{:url("imageDel",["id"=>$vo["id"]])}')" class="ml-5">  删除</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer clearfix">
+                {$page|raw}
+            </div>
+    </div>
+    <!-- /.error-page -->
+{/block}
+
+{block name="script"}
+<script>
+    layui.use(['layer'],function(){
+        layui.layer.photos({
+            photos: '#layer-photos-demo'
+            ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+        });
+    })
+</script>
+{/block}

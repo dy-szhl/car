@@ -1,0 +1,65 @@
+{extend name="base" /}
+<!--高亮选中效果-->
+{block name="current_index"}system/feedback{/block}
+
+{block name="content"}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <div class="col-sm-2">
+            </div>
+
+            <div class="col-sm-10">
+
+                <div class="btn-group">
+
+                </div>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+            <div class="box-body no-padding">
+                <table class="table table-striped"  style="table-layout:fixed" id="layer-photos-demo">
+                    <thead>
+                        <tr>
+                            <th width="20">#</th>
+                            <th width="250">投诉内容</th>
+                            <th width="80">联系电话</th>
+                            <th width="80">投诉日期</th>
+                            <th width="120">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="list" id="vo"}
+                        <tr>
+                            <td>{$i}</td>
+                            <td style="word-wrap:break-word">{$vo['content']}</td>
+                            <td>{$vo['phone']}</td>
+                            <td>{$vo['create_time']}</td>
+                            <td>
+                                <!--<a class="layui-btn layui-btn-sm" href="{:url('imageAdd',['id'=>$vo['id']])}">处理</a>-->
+                            </td>
+                        </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer clearfix">
+                {$page|raw}
+            </div>
+    </div>
+    <!-- /.error-page -->
+{/block}
+
+{block name="script"}
+<script>
+    layui.use(['layer'],function(){
+        layui.layer.photos({
+            photos: '#layer-photos-demo'
+            ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+        });
+    })
+</script>
+{/block}

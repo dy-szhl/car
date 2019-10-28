@@ -1,0 +1,223 @@
+{extend name="base" /}
+<!--高亮选中效果-->
+{block name="current_index"}goods/index{/block}
+
+{block name="style"}
+<style>
+    #goods-img .item{position: relative; display: inline-block}
+    #goods-img .item i{right: 0px;position: absolute;z-index: 999;font-size: 24px;color: red;cursor: pointer}
+    #add-spu-block input{width: 160px;display: inline-block}
+    #add-spu-block .fa-close{color: red}
+
+    .goods-spu{}
+    .goods-spu i{font-size: 24px;color: red;cursor: pointer;}
+</style>
+{/block}
+{block name="content"}
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <!--<h3 class="box-title">Quick Example</h3>-->
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+        <div class="box-body">
+            <form id="form" action="" class="form-horizontal">
+                <input type="hidden" name="id" value="{$model['id']}"/>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">分类</label>
+                    <div class="col-sm-10">
+                        <select name="cid"   class="form-control">
+                            {volist name="cate_list" id="vo"}
+                            <option value="{$vo['id']}" {:$vo['id']==$model['cid']?'selected':''}>{$vo['name']}</option>
+                                {volist name="vo['link_child']" id="child"}
+                                <option value="{$vo['id']},{$child['id']}" {:$child['id']==$model['ct_id']?'selected':''}>&nbsp;&nbsp;&nbsp;{$child['name']}</option>
+                                {/volist}
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">商品名</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" placeholder="商品名" name="name" value="{$model['name']}" maxlength="150">
+                    </div>
+                </div>
+
+                <!--<div class="form-group">
+                    <label class="col-sm-2 control-label">原价</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" placeholder="0.00" name="og_price" value="{$model['og_price']}" maxlength="150">
+                    </div>
+                </div>-->
+
+
+                {volist name="\app\common\model\User::getPropInfo('fields_type')" id="vo"}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label text-red">{$vo['name']}售价</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control goods-price" placeholder="0.00" name="price{$key}" value="{:$model['price'.$key]}" maxlength="10">
+                    </div>
+                </div>
+                {/volist}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">库存</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" placeholder="库存" name="stock" value="{:empty($model['stock'])?999:$model['stock']}" maxlength="150">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">销售数量</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" placeholder="销售数量" name="sold" value="{:empty($model['sold'])?0:$model['sold']}" maxlength="150">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label">商品图片</label>
+
+                    <div class="col-sm-10 margin-bottom">
+                        <button class="layui-btn" id="test1" type="button" lay-data='{:action('upload/info',['type'=>'article'])}' >上传文件</button>
+                    </div>
+                    <div class="col-sm-10 col-sm-offset-2" id="goods-img">
+                        {volist name="model['img']" id="vo"}
+                        <div class="item">
+                            <i class="fa fa-fw fa-close"></i>
+                            <img src="{$vo}" width="120" height="120"/>
+                            <input type="hidden" name="img[]" value="{$vo}"/>
+                        </div>
+                        {/volist}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">排序</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" placeholder="100" name="sort" value="{:$model['sort']?$model['sort']:100}" maxlength="20">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        产品参数
+                        <a href="javascript:;" class="btn btn-sm btn-primary  goods-spu-add "><i class="fa fa-plus"></i></a>
+                    </label>
+                    <div class="col-sm-10 goods-spu">
+                        {volist name="goods_spu" id="vo"}
+                        <div class="form-group">
+                            <div  class="col-sm-2 ">
+                                <input type="text" class="form-control" name="spu_name[]" value="{$vo['name']}" placeholder="{$vo['name']}">
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="spu_value[]" value="{$vo['value']}" placeholder="">
+                            </div>
+                            <div class="col-sm-2">
+                                <i class="fa fa-fw fa-close"></i>
+                            </div>
+                        </div>
+                        {/volist}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">简介:</label>
+                    <div class="col-sm-10">
+                        <textarea name="intro" id=""  rows="5" class="form-control">{$model['intro']}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">详情</label>
+                    <div class="col-sm-10">
+                        <script id="container" name="content" type="text/plain"><?=$model['content']?></script>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">状态</label>
+                    <div class="col-sm-10">
+                        <label>
+                            <input type="radio" name="status" value="1" {:$model['status']!=2?'checked':''} />
+                            正常
+                        </label>
+                        <label>
+                            <input type="radio" name="status" value="2" {:$model['status']==2?'checked':''}>
+                            关闭
+                        </label>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <!-- /.box-body -->
+
+    <div class="box-footer">
+        <button type="button" onclick="$.common.submitForm()" class="col-sm-offset-2 btn  btn-info">保存</button>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<script src="/assets/ueditor1_4_3_3/ueditor.config.js"></script>
+<script src="/assets/ueditor1_4_3_3/ueditor.all.js"></script>
+
+<script>
+
+    //详细资料
+    var ue = UE.getEditor('container');
+    $(function(){
+        layui.use(['layer','upload'], function(){
+            var layer = layui.layer;
+            var upload = layui.upload;
+            $.common.fileUpload(upload,'#test1',(res_data,query_select)=>{
+                var path = res_data.hasOwnProperty('key')?res_data.key:'';
+                var preview_domain = res_data.hasOwnProperty('preview_domain')?res_data.preview_domain:'';
+                $("#goods-img").append('<div class="item">\n' +
+                    '<i class="fa fa-fw fa-close"></i>\n' +
+                    '<img src="'+preview_domain+path+'" width="120" height="120"/>\n' +
+                    '<input type="hidden" name="img[]" value="'+path+'"/>'+
+                    '</div>')
+            })
+        });
+
+        //删除图片
+        $("#goods-img").on('click','.item i',function(){
+            $(this).parent().remove()
+        })
+
+        $("input[name='og_price']").keyup(function(){
+            $("input[name='price']").val($(this).val())
+        })
+        $("#form").on("keyup",'.goods-price',function(){
+            var first_index = $("#form").find(".goods-price:first").parent().parent().index();
+            var current_index = $(this).parent().parent().index(); //当前编辑项
+            var index = current_index-first_index;
+            var price = $(this).val();
+            $("#form").find(".goods-price:gt("+index+")").val(price)
+        })
+        //添加属性栏
+        $(".goods-spu-add").click(function(){
+            $(".goods-spu").append('<div class="form-group">\n' +
+                '    <div  class="col-sm-2 ">\n' +
+                '        <input type="text" class="form-control" name="spu_name[]" value="">\n' +
+                '    </div>\n' +
+                '    <div class="col-sm-8">\n' +
+                '        <input type="text" class="form-control" name="spu_value[]" value="">\n' +
+                '    </div>\n' +
+                '    <div class="col-sm-2">\n' +
+                '        <i class="fa fa-fw fa-close"></i>\n' +
+                '    </div>\n' +
+                '</div>')
+        })
+        //属性删除
+        $(".goods-spu").on('click','i',function(){
+            $(this).parent().parent().remove()
+        })
+
+    })
+
+
+</script>
+{/block}

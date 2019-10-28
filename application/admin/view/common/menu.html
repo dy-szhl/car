@@ -1,0 +1,18 @@
+<ul class="sidebar-menu" data-widget="tree">
+    {volist name="menu" id="vo"}
+        <li class="treeview {:in_array($current_index,$vo['active_index'])?'menu-open':''}">
+            <a href="#">
+                <i class="{$vo['icon']}"></i> <span>{$vo['name']}</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu" {:in_array($current_index,$vo['active_index'])?'style="display: block;"':''}>
+                {volist name="vo['child']" id="child"}
+                    <li {:$current_index==$child['url']?'class="active"':''} ><a href="{:url($child['url'])}"><i class="fa fa-circle-o"></i> {$child['name']}</a></li>
+                {/volist}
+            </ul>
+        </li>
+    {/volist}
+
+</ul>

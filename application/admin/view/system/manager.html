@@ -1,0 +1,57 @@
+{extend name="base" /}
+<!--高亮选中效果-->
+{block name="current_index"}system/manager{/block}
+
+{block name="content"}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <a class="layui-btn layui-btn-sm" href="{:url('managerAdd')}">添加管理员</a>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+            <div class="box-body no-padding">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th width="20">#</th>
+                            <th width="80">用户名</th>
+                            <th width="100">登录帐号</th>
+                            <th width="80">手机号</th>
+                            <th width="60">登录次数</th>
+                            <th width="120">最后一次登录ip</th>
+                            <th width="120">最后一次登录时间</th>
+                            <th width="120">创建时间</th>
+                            <th width="60">状态</th>
+                            <th width="120">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="list" id="vo"}
+                        <tr>
+                            <td>{$i}</td>
+                            <td>{$vo['name']}</td>
+                            <td>{$vo['account']}</td>
+                            <td>{$vo['phone']}</td>
+                            <td>{$vo['login_times']}</td>
+                            <td>{$vo['last_login_ip']}</td>
+                            <td>{$vo['last_time']}</td>
+                            <td>{$vo['create_time']}</td>
+                            <td>{:\\app\\common\\model\\SysManager::getPropInfo('fields_status',$vo['status'])}</td>
+                            <td>
+                                <a class="layui-btn layui-btn-sm" href="{:url('managerAdd',['id'=>$vo['id']])}">编辑</a>
+                                <a class="layui-btn layui-btn-danger layui-btn-sm" href="javascript:;" onclick="$.common.waitConfirm('是否删除该条数据?','{:url("managerDel",["id"=>$vo["id"]])}')" class="ml-5">  删除</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer clearfix">
+                {$page|raw}
+            </div>
+    </div>
+    <!-- /.error-page -->
+{/block}

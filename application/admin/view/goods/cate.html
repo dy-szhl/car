@@ -1,0 +1,69 @@
+{extend name="base" /}
+<!--高亮选中效果-->
+{block name="current_index"}goods/cate{/block}
+
+{block name="content"}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+
+
+            <div class="col-sm-3">
+                <a class="layui-btn layui-btn-sm" href="{:url('cateAdd')}">添加分类</a>
+            </div>
+
+            <div class="col-sm-9">
+                <form class="input-group  col-sm-4">
+                    <input type="text" class="form-control" name="keyword" value="{$keyword}" placeholder="请输入关键字">
+                    <span class="input-group-btn">
+                      <button type="submit" class="btn btn-info btn-flat">搜索</button>
+                    </span>
+                </form>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+            <div class="box-body no-padding">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th width="150">顶级分类</th>
+                        <th width="150">二级分类</th>
+                        <th width="100">状态</th>
+                        <th width="100">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="list" id="vo"}
+                        <tr>
+                            <td rowspan="{:count($vo['link_child'])+1}">{$vo['name']}</td>
+                            <td>--</td>
+                            <td>{:\\app\\common\\model\\GoodsCate::getPropInfo('fields_status',$vo['status'])}</td>
+                            <td>
+                                <a class="layui-btn layui-btn-sm" href="{:url('cateAdd',['id'=>$vo['id']])}">编辑</a>
+                                <a class="layui-btn layui-btn-danger layui-btn-sm" href="javascript:;" onclick="$.common.waitConfirm('是否删除该数据?','{:url('cateDel',['id'=>$vo['id']])}')" class="ml-5">  删除</a>
+                            </td>
+                        </tr>
+                            {volist name="vo['link_child']" id="child"}
+                            <tr>
+
+                                <td>{$child['name']}</td>
+                                <td>{:\\app\\common\\model\\GoodsCate::getPropInfo('fields_status',$child['status'])}</td>
+                                <td>
+                                    <a class="layui-btn layui-btn-sm" href="{:url('cateAdd',['id'=>$child['id']])}">编辑</a>
+                                    <a class="layui-btn layui-btn-danger layui-btn-sm" href="javascript:;" onclick="$.common.waitConfirm('是否删除该数据?','{:url('cateDel',['id'=>$child['id']])}')" class="ml-5">  删除</a>
+                                </td>
+                            </tr>
+                            {/volist}
+                        {/volist}
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer clearfix">
+                {$page|raw}
+            </div>
+    </div>
+    <!-- /.error-page -->
+{/block}

@@ -1,0 +1,360 @@
+{extend name="base" /}
+<!--高亮选中效果-->
+{block name="current_index"}orders/index{/block}
+{block name="style"}
+<style>
+    .layui-table[lay-size=lg] td{padding: 9px 15px;}
+</style>
+{/block}
+
+{block name="content"}
+
+<div class="col-sm-9">
+    <div class="box">
+        <div class="box-header with-border">
+            <h3>订单基本信息</h3>
+        </div>
+        <div class="box-body">
+            <table class="layui-table"  lay-size="lg">
+                <colgroup>
+                    <col width="170">
+                    <col width="190">
+                    <col width="170">
+                    <col width="190">
+                    <col width="170">
+                    <col width="190">
+                    <col width="170">
+                    <col width="190">
+                </colgroup>
+
+                <tbody>
+                <tr>
+                    <td>订单号</td>
+                    <td>{$model['no']}</td>
+                    <td>用户名</td>
+                    <td>{$model['linkUser']['name']}</td>
+                    <td></td>
+                    <td class="text-green"></td>
+                    <td>状态</td>
+                    <td>
+                        <span class="btn btn-success {:empty($model)?'': $model->getStepFlowInfo($model['step_flow'],'field',null)} {:\\app\\common\\model\\Order::getPropInfo('fields_status',empty($model['status'])?0:$model['status'],'style')}">
+                            {:empty($model)?'':$model->getStepFlowInfo($model['step_flow'])}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>支付方式</td>
+                    <td class="text-red">{:empty($model)?'':\\app\\common\\model\\Order::getPropInfo('fields_pay_way',$model['pay_way'],'name')}</td>
+                    <td>订单金额</td>
+                    <td>{$model['money']}</td>
+                    <td>支付</td>
+                    <td>{$model['pay_money']}</td>
+                    <td>总优惠</td>
+                    <td>{$model['dis_money']}</td>
+                </tr>
+
+
+                <tr>
+                    <td>创建时间</td>
+                    <td>{$model['create_time']}</td>
+                    <td>支付时间</td>
+                    <td>{$model['pay_time']?date('Y-m-d H:i:s',$model['pay_time']):''}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-light-blue"></td>
+
+
+
+                </tr>
+                <tr>
+                    <td>发货时间</td>
+                    <td>{$model['send_end_time']?date('Y-m-d H:i:s',$model['send_end_time']):''}</td>
+                    <td>收货时间</td>
+                    <td>{$model['receive_end_time']?date('Y-m-d H:i:s',$model['receive_end_time']):''}</td>
+                    <td>完成时间</td>
+                    <td>{$model['complete_time']?date('Y-m-d H:i:s',$model['complete_time']):''}</td>
+
+                </tr>
+
+                <tr style="background: #f5f5f5; font-weight: bold">
+                    <td colspan="8">
+                        发票信息
+                        <span class="text-green">({:empty($model)?'':\\app\\common\\model\\Order::getInvoiceType($model['invoice_type'],'name')})</span>
+                        {if(!empty($model) && $model['invoice_type'])}
+                        发票内容:<span class="text-green">({:\\app\\common\\model\\Order::getInvoiceContent($model['invoice_content_type'],'name')})</span>
+                        发票类型:<span class="text-green">({:\\app\\common\\model\\Order::getInvoiceTypeName($model['invoice_type'],$model['invoice_content_type'])})</span>
+                        收发票联系人电话:<span class="text-green">({$model['invoice_phone']})</span>
+                        {/if}
+                    </td>
+                </tr>
+                {for start="0" end="count($model['invoice_content'])"   step="4"  }
+                    <tr>
+
+                        <td>{:isset($model['invoice_content'][$i])?$model['invoice_content'][$i]['name']:''}</td>
+                        <td>{:isset($model['invoice_content'][$i])?$model['invoice_content'][$i]['value']:''}</td>
+
+                        <td>{:isset($model['invoice_content'][$i+1])?$model['invoice_content'][$i+1]['name']:''}</td>
+                        <td>{:isset($model['invoice_content'][$i+1])?$model['invoice_content'][$i+1]['value']:''}</td>
+
+                        <td>{:isset($model['invoice_content'][$i+2])?$model['invoice_content'][$i+2]['name']:''}</td>
+                        <td>{:isset($model['invoice_content'][$i+2])?$model['invoice_content'][$i+2]['value']:''}</td>
+
+                        <td>{:isset($model['invoice_content'][$i+3])?$model['invoice_content'][$i+3]['name']:''}</td>
+                        <td>{:isset($model['invoice_content'][$i+3])?$model['invoice_content'][$i+3]['value']:''}</td>
+
+                    </tr>
+                {/for}
+
+                <tr style="background: #f5f5f5;font-weight: bold">
+                    <td colspan="8">
+                        收货地址
+                        {if(in_array(\app\common\model\Order::M_ORDER_HANDLE_EDIT_ADDR,$m_handle))}
+                            <button type="button" class="btn btn-info btn-sm margin send-order-addr" >编辑</button>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td>收货人:</td>
+                    <td>{$model['link_addr']['username']}</td>
+                    <td>手机号码</td>
+                    <td>{$model['linkAddr']['phone']}</td>
+                    <td>地址</td>
+                    <td colspan="3">{$model['linkAddr']['addr'].'  '.$model['linkAddr']['addr_extra']}</td>
+                </tr>
+                <tr style="background: #f5f5f5; font-weight: bold">
+                    <td colspan="8">发货信息</td>
+                </tr>
+                <tr>
+                    <td>物流公司:</td>
+                    <td>{$model['linkLogistics']['company']}</td>
+                    <td>物流单号</td>
+                    <td>{$model['linkLogistics']['no']}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        {if($model['is_skill'])}
+                        <span class="text-red">秒杀商品</span>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td>备注</td>
+                    <td colspan="7">{$model['remark']}</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="box">
+        <div class="box-header with-border">
+            <h3>订单商品</h3>
+        </div>
+        <div class="box-body">
+            <table class="layui-table"  lay-size="lg">
+                <thead>
+                <tr>
+                    <th width="250">商品名称</th>
+                    <th width="120">商品价格</th>
+                    <th width="120">购买数量</th>
+                    <th width="120">是否批发</th>
+                    <th width="120">是否赠品</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {volist name="model['linkGoods']" id="vo"}
+                    <tr>
+                        <td>{$vo['name']}</td>
+                        <td>{$vo['price']}</td>
+                        <td>{$vo['num']}</td>
+                        <td>{:empty($vo['bnum'])?'否':'<span class="text-red">是</span>'}</td>
+                        <td>{:empty($vo['m_gid'])?'否':'<span class="text-red">是</span>'}</td>
+                    </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="col-sm-3">
+    <div class="box">
+        <div class="box-header with-border">
+            <h3>订单操作</h3>
+        </div>
+        <div class="box-body">
+            {if(in_array(\app\common\model\Order::M_ORDER_HANDLE_SURE_PAY,$m_handle))}
+                <a href="javascript:;" class="btn btn-primary opt-order" data-href="{:url('surePay')}" data-confirm_title="确定已收到付款?" data-req_data="{id:{$model['id']}}" >确认付款</a>
+            {/if}
+            {if(in_array(\app\common\model\Order::M_ORDER_HANDLE_DEL,$m_handle))}
+                <a href="javascript:;" class="btn btn-danger opt-order" data-href="{:url('del')}" data-confirm_title="删除订单?" data-req_data="{id:{$model['id']}}" >删除订单</a>
+            {/if}
+            {if(in_array(\app\common\model\Order::M_ORDER_HANDLE_CANCEL,$m_handle))}
+                <a href="javascript:;" class="btn btn-warning opt-order" data-href="{:url('cancel')}" data-confirm_title="确定取消订单?" data-req_data="{id:{$model['id']}}" >取消订单</a>
+            {/if}
+
+            {if(in_array(\app\common\model\Order::M_ORDER_HANDLE_SEND,$m_handle))}
+                <a href="javascript:;" class="btn btn-success opt-order send-order"  data-href="{:url('sendDown')}" data-confirm_title="确定已发货？" data-req_data="{id:{$model['id']}}" >发货</a>
+            {/if}
+        </div>
+
+    </div>
+
+</div>
+
+
+<!--编辑地址-->
+<div id="send-order-addr" style="display: none;">
+    <form action="{:url('modAddr')}">
+
+        <input type="hidden" name="oid" value="{$model['id']}"/>
+
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">收货人:</label>
+            <div class="col-sm-8 margin-bottom">
+                <input type="text" maxlength="100" class="form-control" name="username"  value="{$model['linkAddr']['username']}" placeholder="收货人">
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">手机号码:</label>
+            <div class="col-sm-8 margin-bottom">
+                <input type="text" maxlength="100" class="form-control" name="phone" value="{$model['linkAddr']['phone']}"  placeholder="手机号码">
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">省份:</label>
+            <div class="col-sm-8 margin-bottom">
+                <select name="province" id="provinces" class="form-control">
+                    <option value="{:isset($location_info[0])?$location_info[0]:'请选择'}">{:isset($location_info[0])?$location_info[0]:'请选择'}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">市:</label>
+            <div class="col-sm-8 margin-bottom">
+                <select name="city" id="citys" class="form-control">
+                    <option value="{:isset($location_info[1])?$location_info[1]:'请选择'}">{:isset($location_info[1])?$location_info[1]:'请选择'}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">区、县:</label>
+            <div class="col-sm-8 margin-bottom">
+                <select name="town" id="towns" class="form-control">
+                    <option value="{:isset($location_info[2])?$location_info[2]:'请选择'}">{:isset($location_info[2])?$location_info[2]:'请选择'}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">详细地址:</label>
+            <div class="col-sm-8 margin-bottom" >
+                <input type="text" maxlength="100" class="form-control" name="addr_extra" value="{$model['linkAddr']['addr_extra']}"  placeholder="详细地址">
+            </div>
+        </div>
+    </form>
+    <!-- <div class="form-group">
+         <label  class="col-sm-3 control-label">运费:</label>
+         <div class="col-sm-8 margin-bottom">
+             <input type="number"  class="form-control" name="money"  placeholder="0.00">
+         </div>
+     </div>-->
+</div>
+
+<!--发货-->
+<div id="send-order" style="display: none;">
+    <div class="form-group">
+        <label  class="col-sm-3 control-label">发货单号:</label>
+        <div class="col-sm-8 margin-bottom">
+            <input type="text" maxlength="100" class="form-control" name="no"  placeholder="发货单号">
+        </div>
+    </div>
+    <div class="form-group">
+        <label  class="col-sm-3 control-label">物流公司:</label>
+        <div class="col-sm-8 margin-bottom">
+            <input type="text" maxlength="100" class="form-control" name="company"  placeholder="物流公司">
+        </div>
+    </div>
+</div>
+
+
+{/block}
+{block name="script"}
+<!-- 地址 -->
+<script src="/assets/admin/js/distpicker.data.js"></script>
+<script src="/assets/admin/js/distpicker.js"></script>
+
+<script>
+
+
+    $(function(){
+        layui.use(['layer'], function(){
+            var layer = layui.layer;
+
+
+
+        });
+
+
+
+        $(".send-order-addr").click(function(){
+            var index_load;
+            layer.open({
+                type:1
+                ,title:'编辑订单地址'
+                ,btn: ['确认', '取消']
+                ,area:['600px','600px']
+                ,content:$("#send-order-addr")
+                ,yes: function(index, layero){
+                    var hre=$("#send-order-addr form").attr('action');
+                    var req_data=$("#send-order-addr form").serialize();
+                    $.common.waitConfirm('是否调整订单地址？',hre,req_data,'post')
+
+                }
+            })
+
+        })
+
+
+        $(".opt-order").click(function(){
+            var href = $(this).data('href')
+            var req_data = $(this).data('req_data')
+            var confirm_title = $(this).data('confirm_title')
+            req_data = eval('('+req_data+')')
+
+            //订单发货
+            if($(this).hasClass('send-order')){
+                layer.open({
+                    type:1
+                    ,title:'填写发货信息'
+                    ,btn: ['确认', '取消']
+                    ,area:['400px','300px']
+                    ,content:$("#send-order")
+                    ,yes: function(index, layero){
+                        //按钮【按钮一】的回调
+                        req_data.logistics={}
+                        req_data['logistics']['no']=$("#send-order input[name='no']").val()
+                        req_data['logistics']['company']=$("#send-order input[name='company']").val()
+                        req_data['logistics']['money']=$("#send-order input[name='money']").val()
+                        //请求数据
+                        $.common.waitConfirm(confirm_title,href,req_data,'post')
+                    }
+                })
+            }else{
+                //请求数据
+                $.common.waitConfirm(confirm_title,href,req_data)
+            }
+        })
+
+
+    })
+
+</script>
+{/block}

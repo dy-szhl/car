@@ -1,0 +1,67 @@
+{extend name="base" /}
+<!--高亮选中效果-->
+{block name="current_index"}users/index{/block}
+
+{block name="content"}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+
+            <div class="col-sm-3">
+            </div>
+
+            <div class="col-sm-9">
+                <form class="input-group  col-sm-4">
+                    <input type="text" class="form-control" name="keyword" value="{$keyword}" placeholder="请输入用户名/手机号">
+                    <span class="input-group-btn">
+                      <button type="submit" class="btn btn-info btn-flat">搜索</button>
+                    </span>
+                </form>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+            <div class="box-body no-padding">
+                <table class="table table-striped" id="layer-photos-demo">
+                    <thead>
+                        <tr>
+                            <th width="20">#</th>
+                            <th width="80">用户名</th>
+                            <th width="80">手机号</th>
+                            <th width="120">更新日期</th>
+                            <th width="120">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="list" id="vo"}
+                        <tr>
+                            <td>{$i}</td>
+                            <td>{$vo['name']}</td>
+                            <td>{$vo['phone']}</td>
+                            <td>{$vo['update_time']}</td>
+                            <td>
+                            </td>
+                        </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer clearfix">
+                {$page|raw}
+            </div>
+    </div>
+    <!-- /.error-page -->
+{/block}
+
+{block name="script"}
+<script>
+    layui.use(['layer'],function(){
+        layui.layer.photos({
+            photos: '#layer-photos-demo'
+            ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+        });
+    })
+</script>
+{/block}

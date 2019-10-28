@@ -1,0 +1,58 @@
+{extend name="base" /}
+<!--高亮选中效果-->
+{block name="current_index"}article,article/index{/block}
+
+{block name="content"}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+            <div class="box-body">
+                <form  id="form" action="{:url('settingSave')}" class="form-horizontal">
+                    <input type="hidden" name="type" value="reg_protocol"/>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <!-- 加载编辑器的容器 -->
+                            <script id="container" name="content" type="text/plain">{:htmlspecialchars_decode($content)}</script>
+                        </div>
+                    </div>
+
+
+
+                </form>
+
+            </div>
+            <!-- /.box-body -->
+
+        <div class="box-footer">
+            <button type="button" onclick="$.common.submitForm($('#form'),1)" class=" btn  btn-info">保存</button>
+        </div>
+    </div>
+
+{/block}
+
+
+{block name="script"}
+<!-- 配置文件 -->
+<script type="text/javascript" src="/assets/ueditor1_4_3_3/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="/assets/ueditor1_4_3_3/ueditor.all.js"></script>
+
+<script>
+    var ue = UE.getEditor('container');
+    //引用上传组件
+    layui.use(['upload','laydate'],function(){
+        var upload = layui.upload;
+        var laydate = layui.laydate;
+        $.common.fileUpload(upload,'.upload-img')
+        //执行一个laydate实例
+        laydate.render({
+            elem: '.datetime' //指定元素
+            ,type: 'datetime' //默认，可不填
+            ,max: 1
+        });
+    })
+</script>
+{/block}
