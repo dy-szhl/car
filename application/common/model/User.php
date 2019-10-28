@@ -12,7 +12,21 @@ class User extends BaseModel
         ['name'=>'vip会员'      ,'img'=>''],
         ['name'=>'高级vip会员'  ,'img'=>''],
     ];
+    protected $insert=['face','name','status'=>1];
+    /**
+     * 生成user_token
+     * @return string
+     * */
+    public function generateUserToken()
+    {
+        $time = time();
+        $access_token = $this->id.'.'.$time.'.'.rand(10000,9999).'.'.self::generateSign($this->id,$time);
+        //更新登录凭证
+        //$this->token = $access_token;
+        //$this->save();
 
+        return $access_token;
+    }
 
     /**
      * 验证user_token
@@ -36,6 +50,22 @@ class User extends BaseModel
 
     }
 
+    //自动完成名称
+    protected function setNameAttr($value,$data)
+    {
+        if($value){
+            $name =  $value;
+        }else{
+            $phone = empty($data['phone'])?'':$data['phone'];
+
+            if(!empty($phone)){
+                $name = substr($phone,-4).'用户';
+            } else{
+                $name = '用户昵称';
+            }
+        }
+        return $name;
+    }
 
     //生成token签名
     protected static function generateSign($user_id,$time)
@@ -55,7 +85,26 @@ class User extends BaseModel
 
         $this->save($data);
     }
-
+    /**
+     * 登录
+     */
+    public static function handleLogin($account){
+        empty($account) && exception('请输入手机号');
+        $model = self::where(['phone'=>$account])->find();
+        if(empty($model)){
+            $model = new self();
+            $data['phone'] = $account;
+        }
+        if(!empty($data)){
+            //赋值数据
+            foreach ($data as $key=>$vo){
+                $model->setAttr($key,$vo);
+            }
+            $bool = $model->save();
+            empty($bool) && exception('更新失败');
+        }
+        return $model;
+    }
 
     /**
      * 添加购物车
