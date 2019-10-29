@@ -15,16 +15,6 @@ class Goods extends BaseModel
         ['name'=>'材质','value'=>''],
         ['name'=>'尺寸','value'=>''],
     ];
-    /**
-    * 获取分页数据
-    * @param $php_input array 请求数据
-    * @throws
-    * @return \think\Paginator
-    * */
-    public static function getFormatData(array $php_input=[])
-    {
-        return self::where($php_input['where'])->order($php_input['order'])->paginate();
-    }
 
     public function setCidAttr($value,$data)
     {

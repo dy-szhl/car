@@ -31,10 +31,7 @@ class Goods extends Common
             if($fields && $order) $order_sql = $fields.' '.$order;
             if($keyword) $where[] = ['name','like','%'.$keyword.'%'];
         }
-        $php_input['order'] = $order_sql;
-        $php_input['where'] = $where;
-
-        $info = \app\common\model\Goods::getFormatData($php_input)->each(function($item,$index)use(&$list){
+        $info = \app\common\model\Goods::where($where)->order($order_sql)->paginate()->each(function($item,$index)use(&$list){
             array_push($list,[
                 'id' => $item['id'],
                 'name' => $item['name'],
@@ -70,4 +67,11 @@ class Goods extends Common
         return $this->_resData(1,'获取成功',$data);
     }
 
+    //关键字搜索
+    public function search()
+    {
+        $content = \app\common\model\SysSetting::getContent('hot_key');
+        $data['hot_key'] = explode("\r\n",$content);
+        return $this->_resData(1,'获取成功',$data);
+    }
 }

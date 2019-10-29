@@ -20,6 +20,7 @@ class Common
         $this->request = request();
 
         $user_token = isset($_SERVER['HTTP_USER_TOKEN'])?$_SERVER['HTTP_USER_TOKEN']:'';
+//        print_r($_SERVER);
         $user_token_arr = \app\common\model\User::validUserToken($user_token);
         if($user_token_arr){
             //验证成功
