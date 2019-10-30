@@ -3,49 +3,45 @@ namespace app\api\controller;
 
 class Goods extends Common
 {
-    public function cate()
-    {
-        $php_input = input();
-        $list = [];
-        $info = \app\common\model\GoodsCate::getPaginateData($php_input)->each(function($item,$index)use(&$list){
-            array_push($list,[
-                'id' => $item['id'],
-                'name' => $item['name'],
-                'date_time' => $item['create_time'],
-            ]);
-        });
-
-        $data=['list'=>$list,'total_page'=>$info->lastPage()];
-        return $this->_resData(1,'获取成功',$data);
-    }
-    //商品列表
-    public function goods_list()
+    public function cate($is_return=false,$limit=null)
     {
         $list = [];
-        $where[] = ['status','=',1];
-        $order_sql = 'update_time desc';
-        if(input()){
-            $fields = input('fields');
-            $order = input('order');
-            $keyword = input('keyword');
-            if($fields && $order) $order_sql = $fields.' '.$order;
-            if($keyword) $where[] = ['name','like','%'.$keyword.'%'];
-        }
-        $info = \app\common\model\Goods::where($where)->order($order_sql)->paginate()->each(function($item,$index)use(&$list){
+        \app\common\model\GoodsCate::getPageData($limit)->each(function($item,$index)use(&$list){
             array_push($list,[
                 'id' => $item['id'],
                 'name' => $item['name'],
                 'img' => $item['img'],
+            ]);
+        });
+
+        return $is_return ? $list : $this->_resData(1,'获取成功',$list);
+    }
+
+
+
+    //商品列表
+    public function goodsList($is_return=false)
+    {
+
+        $input_data = input();
+        $list = [];
+        $info = \app\common\model\Goods::getPaginateData($input_data)->each(function($item,$index)use(&$list){
+            array_push($list,[
+                'id' => $item['id'],
+                'name' => $item['name'],
+                'img' => $item['cover_img'],
                 'date_time' => $item['create_time'],
                 'price' => $this->user_id?$item['price0']:'登录后查看',
                 'sold_num' => $item['sold_num'],
             ]);
         });
+
+
         $data=['list'=>$list,'total_page'=>$info->lastPage()];
-        return $this->_resData(1,'获取成功',$data);
+        return $is_return? $list : $this->_resData(1,'获取成功',$data);
     }
     //商品详情
-    public function goods_detail()
+    public function goodsDetail()
     {
         $id = input('id',0,'intval');
         $model = \app\common\model\Goods::get($id);

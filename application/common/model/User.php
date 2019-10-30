@@ -12,7 +12,7 @@ class User extends BaseModel
         ['name'=>'vip会员'      ,'img'=>''],
         ['name'=>'高级vip会员'  ,'img'=>''],
     ];
-    protected $insert=['face','name','status'=>1];
+    protected $insert=['face','type'=>0,'money'=>0.00,'name','status'=>1];
     /**
      * 生成user_token
      * @return string
@@ -21,9 +21,6 @@ class User extends BaseModel
     {
         $time = time();
         $access_token = $this->id.'.'.$time.'.'.rand(10000,9999).'.'.self::generateSign($this->id,$time);
-        //更新登录凭证
-        //$this->token = $access_token;
-        //$this->save();
 
         return $access_token;
     }
@@ -47,7 +44,6 @@ class User extends BaseModel
             return false;
         }
         return $arr;
-
     }
 
     //自动完成名称
@@ -65,6 +61,18 @@ class User extends BaseModel
             }
         }
         return $name;
+    }
+
+    //自动完成名称
+    protected function getFaceAttr($value,$data)
+    {
+        return self::handleFile($value);
+    }
+
+    //自动完成名称
+    protected function setFaceAttr($value,$data)
+    {
+        return $value??'/assets/images/avatar0'.rand(1,7).'.png';
     }
 
     //生成token签名
@@ -86,24 +94,22 @@ class User extends BaseModel
         $this->save($data);
     }
     /**
-     * 登录
+     * 验证码登录
+     * @param string $phone 手机号
+     * @param string $code 验证码
+     * @param array $min_data 数组
+     * @throws
+     * @return self
      */
-    public static function handleLogin($account,$php_input){
-        empty($account) && exception('请输入手机号');
-        $model = self::where(['phone'=>$account])->find();
+    public static function handleCodeLogin($phone,$code,array $min_data=[]){
+        \app\common\model\Sms::validVerify(0,$phone,$code);
+        $model = self::where(['phone'=>$phone])->find();
         if(empty($model)){
             $model = new self();
-            $data = $php_input;
-            $data['phone'] = $account;
+            $model->phone = $phone;
+            $model->save();
         }
-        if(!empty($data)){
-            //赋值数据
-            foreach ($data as $key=>$vo){
-                $model->setAttr($key,$vo);
-            }
-            $bool = $model->save();
-            empty($bool) && exception('更新失败');
-        }
+
         return $model;
     }
 
@@ -223,7 +229,7 @@ class User extends BaseModel
      * */
     public function bindPhone($phone,$type=false,$verify=false)
     {
-        !validPhone($phone) && exception('请输入正确的手机号');
+        !valid_phone($phone) && exception('请输入正确的手机号');
 
         $model = self::where([['phone','=',$phone],['id','<>',$this->id]])->find();
         !empty($model) && exception('手机号已被使用,请更换其它手机号');

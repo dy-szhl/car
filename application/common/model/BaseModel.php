@@ -125,18 +125,12 @@ class BaseModel extends Model
         if(empty($file)) return '';
         if(preg_match('/^https?:\/\//',$file)) return $file;
         //当前模块
-//        $module = request()->module();
-//        if($module=='api'){
+        $module = request()->module();
+        if($module=='api'){
             //api模块增加域名前缀
-            $qiniu_prefix = str_replace('/','\\/',config('qiniu.file_prefix'));
-            if(preg_match('/^'.$qiniu_prefix.'/',$file)){
-                //七牛文件前缀
-                $file = config('qiniu.preview_domain').$file;
-            }else{
-                //当前服务器的域名
-                $file = request()->domain().$file;
-            }
-//        }
+            //当前服务器的域名
+            $file = request()->domain().$file;
+        }
         return $file;
 
 

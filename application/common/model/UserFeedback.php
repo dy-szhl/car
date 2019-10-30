@@ -17,7 +17,7 @@ class UserFeedback extends BaseModel
     public static function record(array $data=[],User $user_model=null)
     {
         empty($data['content']) && exception('请输入反馈内容');
-        !empty($data['phone']) && !validPhone($data['phone']) && exception('请输入正确的手机号');
+        !empty($data['phone']) && !valid_phone($data['phone']) && exception('请输入正确的手机号');
         $model = new self();
         !empty($user_model) && $model->uid = $user_model->id;
         !empty($data['phone']) && $model->phone = $data['phone'];

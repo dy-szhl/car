@@ -32,7 +32,7 @@ class Common
             //}
         }
         //in_array() 搜索数组中是否存在指定的值。
-        if(!in_array($this->request->action(),$this->ignore_action) && $this->need_login && empty($this->user_id)){
+        if(!in_array($this->request->action(true),$this->ignore_action) && $this->need_login && empty($this->user_id)){
             //未登录跳转登录页
             abort(-1,'请先登录');
         }

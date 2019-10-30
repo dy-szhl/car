@@ -643,7 +643,7 @@ class Order extends BaseModel
         if(!isset($data['oid'])) exception('订单信息异常');
         if(empty($data['username'])) exception('用户名不能为空');
         if(empty($data['phone'])) exception('手机号不能为空');
-        if(!validPhone($data['phone'])) exception('请输入正确的手机号码');
+        if(!valid_phone($data['phone'])) exception('请输入正确的手机号码');
         if(empty($data['addr'])) exception('请选择地址');
 
         $model = OrderAddr::where(['oid'=>$data['oid']])->find();

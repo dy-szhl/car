@@ -22,7 +22,7 @@ class Sms extends BaseModel
         //验证类型
         !array_key_exists($type,self::getPropInfo('fields_type')) && exception('发送类型异常');
         //验证手机号码
-        !validPhone($phone) && exception('请输入正确的手机号');
+        !valid_phone($phone) && exception('请输入正确的手机号');
         //发送内容
         list($content,$param) = self::handleContent(self::getPropInfo('fields_type',$type));
         //发送短信
@@ -81,7 +81,7 @@ class Sms extends BaseModel
         //验证类型
         !array_key_exists($type,self::getPropInfo('fields_type')) && exception('发送类型异常');
         //验证手机号码
-        !validPhone($phone) && exception('请输入正确的手机号');
+        !valid_phone($phone) && exception('请输入正确的手机号');
         empty($verify) && exception('请输入验证码');
 
         $model = self::where(['type'=>$type,'phone'=>$phone])->order('id desc')->find();

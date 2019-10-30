@@ -23,7 +23,7 @@ class UserAddr extends Validate
     //自定义验证规则
     public function checkphone($value, $rule,$data)
     {
-        if(!validPhone($value)){
+        if(!valid_phone($value)){
             return '请输入正确的手机号';
         }
         return true;

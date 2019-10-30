@@ -13,6 +13,11 @@
 /**
  * 验证手机号码
  * */
-function validPhone($phone){
+function valid_phone($phone){
     return preg_match('/^1\d{10}$/',$phone);
+}
+
+function get_cline_ip()
+{
+
 }
